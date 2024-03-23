@@ -50,13 +50,17 @@ Two breeds of cattle (brown and black) were investigated to see if one had a hig
 
 ### Data
 
-The data is stored in the `cattle` data frame. 
+The data is stored in the `cattle` data frame. You may view the data by running (*we also call it "printing", even though the `print()` function isn't used*) the data frame in the console.
+
+Click on **Run Code** or use the shortcut `Ctrl + Enter` to run the code in the code chunk.
+
+```{r ex-print, exercise=TRUE}
+cattle
+```
 
 ### Data exploration
 
 It is important to know how to recognise, and visualise data that is suitable for a two-sample *t*-test. Let's start by checking the structure of the data. Which function would you use? Select **Hints** if you need help. 
-
-Click on **Run Code** or use the shortcut `Ctrl + Enter` to run the code in the code chunk.
 
 ```{r ex-str, exercise=TRUE}
 
@@ -68,13 +72,23 @@ Click on **Run Code** or use the shortcut `Ctrl + Enter` to run the code in the 
 ```
 
 ```{r ex-str-solution}
-# Any of these solutions will work
 str(cattle)
-dplyr::glimpse(cattle) # needs dplyr package
 ```
 
+
 ### 
-When you're looking at the structure of the data, you're not only interested in the number of observations and variables, but also the type of variables. In this case, we have two variables: `Weight` and `Breed`. 
+Looks a bit messy, doesn't it! The `str()` function also stores attributes of the data frame, which is why it looks a bit cluttered. 
+
+### 
+We can use the `glimpse()` function from the `dplyr` package to get a tidier view of the data.
+
+```{r}
+dplyr::glimpse(cattle)
+```
+
+
+### 
+When we're looking at the structure of the data, we're not only interested in the number of observations and variables, but also the type of variables. In this case, we have two variables: `Weight` and `Breed`. 
 
 ### 
 The `Weight` variable is **continuous**, while the `Breed` variable is **categorical**. However, `Breed` is currently categorised as a character variable. 
@@ -134,6 +148,10 @@ cattle <- cattle %>%
 
 ### 
 We can check the structure of the data again to confirm that the `Breed` variable has been converted to a factor variable. We'll just do it now for you so you don't have to run the code. Instead of `str()` let's use `glimpse()` from the `dplyr` package.
+
+```{r include=FALSE}
+cattle$Breed <- as.factor(cattle$Breed)
+```
 
 ```{r}
 dplyr::glimpse(cattle)
@@ -437,21 +455,39 @@ fit
 
 You should know how to interpret the results by now. If you are unsure, refer back to the lecture notes or the previous tutorials.
 
-You may write your conclusion in the box below. The 
+You may write your conclusion in the box below. Click **Continue** to view solutions.
 
 ```{r ex-conclusion, exercise=TRUE}
 # Write your conclusion here using the comment tag `#`
 ```
 
 ### 
-Click on the dropdown below to see the solution.
 
-<details>
-  <summary> **+** Click for Solution</summary>
-  <p>
-  The results of the two-sample t-test show that the p-value is less than 0.05. This means that we reject the null hypothesis and conclude that the two groups have different mean weights. From the results, Brown cows have a significantly higher mean weight than Black cows.
-  </p>
-</details> 
+#### Solution
+
+We check the assumptions graphically by plotting both a QQ-plot and a boxplot of the data.
+
+```{r echo=FALSE}
+# Normality
+ggplot(data = cattle, mapping = aes(sample = Weight)) +
+  stat_qq() +
+  stat_qq_line() +
+  facet_wrap(~ Breed)
+
+# Equal variances
+ggplot(data = cattle, mapping = aes(x = Breed, y = Weight)) +
+  geom_boxplot()
+```
+
+Both assumptions were met:
+
+- The data is normally distributed for both groups, as shown by the QQ-plot and boxplot.
+- The equal variances assumption is met, as the range of data shown between the two boxplots is not orders of magnitude different.
+
+**Note**: because assumption checks are exploratory, we do not need to report the results in detail, neither do the plots need to "look pretty" or be publication-ready. They are for our own understanding.
+
+**Interpretation and conclusion:** The results of the two-sample t-test show that the p-value is less than 0.05. This means that we reject the null hypothesis and conclude that the two groups have different mean weights. From the results, Brown cows have a significantly higher mean weight than Black cows.
+
 
 
 
